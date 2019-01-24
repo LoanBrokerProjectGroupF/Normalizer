@@ -10,15 +10,12 @@ import com.kryptag.rabbitmqconnector.MessageClasses.CreditMessage;
 import com.kryptag.rabbitmqconnector.MessageClasses.LoanResponse;
 import com.kryptag.rabbitmqconnector.RMQConnection;
 import com.kryptag.rabbitmqconnector.RMQConsumer;
-import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 /**
@@ -41,6 +38,7 @@ public class Consumer extends RMQConsumer{
     private void doWork(){
         Gson g = new Gson();
         if (!this.getQueue().isEmpty()) {
+            // This could be resolved by using xml namespace for the replyto queue
             if(this.getQueue().peek().toString().startsWith("<")){
                 LoanResponse loanResp = fromXML(this.getQueue().remove().toString());
                 this.getRmq().sendMessage(g.toJson(loanResp));
